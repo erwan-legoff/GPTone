@@ -13,16 +13,21 @@ const configuration = new Configuration({
 const openai = new OpenAIApi(configuration)
 
 //These arrays are to maintain the history of the conversation
-const conversationContext: any = []
-const currentMessages: any = []
+const conversationContext: any[] = []
+const currentMessages: any[] = []
 
 // Controller function to handle chat conversation
 export const generateResponse = async (req: Request, res: Response) => {
   try {
-    const { prompt } = req.body
+    const { prompt, isNewConversation } = req.body
     const modelId = 'gpt-3.5-turbo'
     const promptText = `${prompt}\n\nResponse:`
 
+    if (isNewConversation) {
+      // Clear the context
+      conversationContext.length = 0
+      currentMessages.length = 0
+    }
     // Restore the previous context
     for (const [inputText, responseText] of conversationContext) {
       currentMessages.push({ role: 'user', content: inputText })
