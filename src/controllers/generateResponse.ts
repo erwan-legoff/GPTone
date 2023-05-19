@@ -54,9 +54,20 @@ const modelId = 'gpt-3.5-turbo'
 const defaultSystem = systemEnum.COMPOSITOR
 
 // const defaultSystem = `Pre erwan, tu ne réponds qu'en français. Tu es un mec gentil qui essaie de faire de son mieux pour être honnête et dire la vérité. Tu es le genre de personne qui ne supporte pas de dire des choses fausses avec une grande confiance, tu essaies toujours de révoquer tes premières hypothèses avant d'essayer de répondre à quoi que ce soit avec confiance, quand tu ne sais pas tu essaies toujours de répondre tout en disant ton niveau de certitude.`
+//On fait l'interface pour ça { prompt, isNewConversation, pseudo, randomness, richness, aiPersonality }
+interface GenerateResponseRequest extends Request {
+  body: {
+    prompt?: string
+    isNewConversation?: boolean
+    pseudo?: string
+    randomness?: number
+    richness?: number
+    aiPersonality?: string
+    conversationId?: string
+  }
+}
 
-// Controller function to handle chat conversation
-export const generateResponse = async (req: Request, res: Response) => {
+export const generateResponse = async (req: GenerateResponseRequest, res: Response) => {
   try {
     const { prompt, isNewConversation, pseudo, randomness, richness, aiPersonality } = req.body
 
@@ -70,11 +81,13 @@ export const generateResponse = async (req: Request, res: Response) => {
       throw new ValidationError('Conversation could not be created')
     }
 
-    if (randomness > 1 || randomness < 0) throw new ValidationError('Randomness must be between 0 and 1')
-    if (richness > 2 || richness < -2) throw new ValidationError('Richness must be between -2 and 2')
-
     const topProbability = randomness || 0.6
     const frequencyPenalty = richness || 0.7
+
+    if (topProbability > 1 || topProbability < 0) throw new ValidationError('Randomness must be between 0 and 1')
+    if (frequencyPenalty > 2 || frequencyPenalty < -2) throw new ValidationError('Richness must be between -2 and 2')
+
+    if (!pseudo) throw new ValidationError('Pseudo is required')
 
     // Restore the previous context
     generateContext(currentConversation, promptText, pseudo)
