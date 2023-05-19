@@ -2,7 +2,7 @@ import { Request, Response } from 'express'
 import {
   OpenAIApi,
   Configuration,
-  ChatCompletionRequestMessage as OpenAiRequestMessage,
+  ChatCompletionRequestMessage as Message,
   ChatCompletionRequestMessageRoleEnum as OpenAiRoleEnum,
   CreateChatCompletionRequest,
   ConfigurationParameters,
@@ -11,9 +11,6 @@ import dotenv from 'dotenv'
 import systemEnum from '../enums/SystemEnum'
 
 dotenv.config()
-
-/*Nevermind, I want it in Interface */
-interface Message extends OpenAiRequestMessage {}
 
 const { User: USER_ROLE, Assistant: ASSISTANT_ROLE, System: SYSTEM_ROLE } = OpenAiRoleEnum
 class ValidationError extends Error {
@@ -134,9 +131,6 @@ function handleConversation(isNewConversation: any, req: Request, pseudo: any, a
   let conversationId = req.body.conversationId
 
   if (conversationId && typeof conversationId !== 'string') throw new ValidationError('ConversationId must be a string')
-
-  // The conversationId should contain the pseudo
-  if (conversationId && !conversationId.includes(pseudo)) throw new ValidationError('Invalid conversationId')
 
   if (aiPersonality && typeof aiPersonality !== 'string') throw new ValidationError('Personality must be a string')
 
