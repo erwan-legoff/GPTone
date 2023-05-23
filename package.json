@@ -21,6 +21,7 @@
   "homepage": "https://github.com/erwan-legoff/GridOne#readme",
   "devDependencies": {
     "@types/dotenv": "^8.2.0",
+    "@types/morgan": "^1.9.4",
     "@types/node": "^17.0.45",
     "@typescript-eslint/eslint-plugin": "^5.16.0",
     "@typescript-eslint/parser": "^5.16.0",
@@ -38,6 +39,7 @@
     "body-parser": "^1.20.2",
     "dotenv": "^16.0.3",
     "express": "^4.18.2",
+    "morgan": "^1.10.0",
     "openai": "^3.2.1"
   }
 }
